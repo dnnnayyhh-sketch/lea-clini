@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>ROYAL CLINIC | المنظومة الطبية الذكية</title>
+
+  <!-- إعدادات التوافق التام مع آيفون (iOS Web App) -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="RoyalClinic">
+  <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3004/3004458.png">
+
+  <!-- الخطوط والأيقونات -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #090c10;
+      --card-bg: #121721;
+      --border: rgba(212, 175, 55, 0.28);
+      --gold: #d4af37;
+      --gold-light: #f7e7b4;
+      --gold-grad: linear-gradient(135deg, #f5d77f 0%, #aa820a 100%);
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --cyan: #38bdf8;
+      --green: #25d366;
+      --radius: 20px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Cairo', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: radial-gradient(circle at 50% 15%, #182234 0%, var(--bg) 80%);
+      color: var(--text);
+      min-height: 100vh;
+      padding-bottom: 95px;
+      overflow-x: hidden;
+    }
+
+    .container {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    /* iOS Status Tip */
+    .ios-tip {
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px dashed var(--cyan);
+      border-radius: 12px;
+      padding: 8px 12px;
+      font-size: 0.72rem;
+      color: var(--cyan);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    /* Header */
+    .clinic-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(18, 23, 33, 0.75);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .brand-title {
+      font-family: 'Playfair Display', 'Cairo', serif;
+      font-size: 1.3rem;
+      background: var(--gold-grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1.2;
+    }
+
+    .brand-sub {
+      font-size: 0.68rem;
+      color: var(--muted);
+    }
+
+    .status-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.72rem;
+      color: #10b981;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-weight: 700;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 8px #10b981;
+    }
+
+    /* Live Queue Tracker Card */
+    .queue-card {
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.12), rgba(18, 23, 33, 0.95));
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px;
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+    }
+
+    .queue-info h4 {
+      font-size: 0.85rem;
+      color: var(--gold-light);
+      margin-bottom: 4px;
+    }
+
+    .queue-info p {
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+
+    .queue-number-box {
+      background: var(--gold-grad);
+      color: #000;
+      width: 58px;
+      height: 58px;
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+    }
+
+    .queue-number-box span { font-size: 1.4rem; line-height: 1; }
+    .queue-number-box small { font-size: 0.6rem; }
+
+    /* Action Grid Buttons */
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .action-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .action-btn:active {
+      transform: scale(0.97);
+      background: rgba(212, 175, 55, 0.15);
+    }
+
+    .action-btn i {
+      font-size: 1.25rem;
+      color: var(--gold);
+    }
+
+    .action-btn-text h5 { font-size: 0.82rem; color: #fff; }
+    .action-btn-text p { font-size: 0.66rem; color: var(--muted); }
+
+    /* Interactive Before & After Slider */
+    .section-title {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--gold-light);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .ba-container {
+      position: relative;
+      width: 100%;
+      height: 250px;
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      margin-bottom: 18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .ba-img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      pointer-events: none;
+    }
+
+    .ba-after-wrap {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 50%;
+      height: 100%;
+      overflow: hidden;
+      border-left: 2px solid var(--gold);
+    }
+
+    .ba-after-wrap img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 480px; /* مطابق لعرض الكونتينر */
+      object-fit: cover;
+      pointer-events: none;
+    }
+
+    .ba-badge {
+      position: absolute;
+      bottom: 12px;
+      padding: 3px 10px;
+      border-radius: 8px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      background: rgba(0,0,0,0.75);
+      border: 1px solid rgba(255,255,255,0.2);
+      z-index: 5;
+    }
+
+    .ba-badge.before { right: 12px; color: #f87171; }
+    .ba-badge.after { left: 12px; color: #34d399; }
+
+    .ba-slider {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      cursor: ew-resize;
+      z-index: 10;
+    }
+
+    /* Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 12px;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      z-index: 900;
+    }
+
+    .dock {
+      width: 90%;
+      max-width: 420px;
+      height: 62px;
+      background: rgba(18, 23, 33, 0.9);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.7);
+    }
+
+    .dock-btn {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 1.15rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .dock-btn.active, .dock-btn:hover {
+      color: var(--gold);
+    }
+
+    .dock-btn span {
+      font-size: 0.65rem;
+      font-weight: 700;
+    }
+
+    /* Modals */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      z-index: 1000;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .modal-sheet {
+      background: #11151f;
+      width: 100%;
+      max-width: 480px;
+      border-top-left-radius: 26px;
+      border-top-right-radius: 26px;
+      border: 1px solid var(--border);
+      padding: 20px 16px;
+      max-height: 85vh;
+      overflow-y: auto;
+      animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    .sheet-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding-bottom: 10px;
+      margin-bottom: 14px;
+    }
+
+    .close-btn { background: none; border: none; color: var(--muted); font-size: 1.4rem; cursor: pointer; }
+
+    /* Form Styles */
+    .form-label { font-size: 0.76rem; color: var(--muted); margin-bottom: 4px; display: block; font-weight: 600; }
+    .form-input, .form-select {
+      width: 100%;
+      background: #090c10;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: #fff;
+      padding: 11px 12px;
+      font-size: 0.82rem;
+      margin-bottom: 10px;
+      outline: none;
+    }
+
+    .primary-btn {
+      width: 100%;
+      background: var(--gold-grad);
+      color: #000;
+      border: none;
+      padding: 13px;
+      border-radius: 14px;
+      font-size: 0.9rem;
+      font-weight: 900;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 18px rgba(212, 175, 55, 0.35);
+    }
+
+    .whatsapp-btn {
+      background: var(--green);
+      color: #fff;
+      box-shadow: 0 4px 18px rgba(37, 211, 102, 0.35);
+    }
+
+    /* Chat Concierge */
+    .chat-box {
+      height: 260px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 10px;
+      background: #090c10;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      margin-bottom: 10px;
+    }
+
+    .chat-msg {
+      max-width: 82%;
+      padding: 9px 12px;
+      border-radius: 14px;
+      font-size: 0.78rem;
+      line-height: 1.4;
+    }
+
+    .chat-msg.bot {
+      background: #1a2233;
+      color: #e2e8f0;
+      align-self: flex-start;
+      border-bottom-left-radius: 4px;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .chat-msg.user {
+      background: var(--gold-grad);
+      color: #000;
+      font-weight: 600;
+      align-self: flex-end;
+      border-bottom-right-radius: 4px;
+    }
+
+    .chat-input-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .chat-input {
+      flex: 1;
+      background: #090c10;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: #fff;
+      padding: 10px 12px;
+      font-size: 0.8rem;
+      outline: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- Tip to save on iPhone Screen -->
+    <div class="ios-tip">
+      <i class="fab fa-apple" style="font-size:1.1rem;"></i>
+      <span>للآيفون: اضغط مشاركة في سفاري ثم <strong>"إضافة للشاشة الرئيسية"</strong> ليعمل كتطبيق دائم.</span>
+    </div>
+
+    <!-- Clinic Header -->
+    <header class="clinic-header">
+      <div>
+        <h1 class="brand-title">ROYAL CLINIC</h1>
+        <p class="brand-sub">المنظومة التخصصية للجراحة والتجميل</p>
+      </div>
+      <div class="status-badge">
+        <div class="status-dot"></div>
+        <span>العيادة تستقبل</span>
+      </div>
+    </header>
+
+    <!-- Live Queue Tracker Card -->
+    <div class="queue-card">
+      <div class="queue-info">
+        <h4><i class="fas fa-user-clock" style="color:var(--gold);"></i> الدور المباشر في العيادة</h4>
+        <p>يتم تحديث الرقم تلقائياً لتفادي الانتظار في الصالة</p>
+        <small style="color:var(--cyan); font-weight:700;">المراجع المتواجد حالياً: داخل الكشف</small>
+      </div>
+      <div class="queue-number-box">
+        <small>رقم الدور</small>
+        <span id="currentQueueNum">07</span>
+      </div>
+    </div>
+
+    <!-- Quick Action Cards -->
+    <div class="quick-actions">
+      <div class="action-btn" onclick="openChatModal()">
+        <i class="fas fa-robot"></i>
+        <div class="action-btn-text">
+          <h5>المساعد الذكي</h5>
+          <p>استشارة فورية 24 ساعة</p>
+        </div>
+      </div>
+
+      <div class="action-btn" onclick="openBookingModal()">
+        <i class="fas fa-calendar-check"></i>
+        <div class="action-btn-text">
+          <h5>حجز موعد VIP</h5>
+          <p>تثبيت فوري عبر واتساب</p>
+        </div>
+      </div>
+
+      <div class="action-btn" onclick="openSymmetryModal()">
+        <i class="fas fa-draw-polygon"></i>
+        <div class="action-btn-text">
+          <h5>محلل التناسق</h5>
+          <p>النسب والزوايا الجمالية</p>
+        </div>
+      </div>
+
+      <div class="action-btn" onclick="openFaqModal()">
+        <i class="fas fa-file-medical"></i>
+        <div class="action-btn-text">
+          <h5>إرشادات العمليات</h5>
+          <p>تعليمات ما قبل وبعد</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Interactive Clinical Results Slider (Before & After) -->
+    <div class="section-title">
+      <i class="fas fa-images" style="color:var(--gold);"></i>
+      <span>المعرض السريري المقارن (اسحب لمشاهدة النتيجة)</span>
+    </div>
+
+    <div class="ba-container" id="baContainer">
+      <!-- الصورة قبل -->
+      <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=600&q=80" class="ba-img" alt="قبل الإجراء">
+      <div class="ba-badge before">قبل الإجراء</div>
+
+      <!-- الصورة بعد مع قناع السحب -->
+      <div class="ba-after-wrap" id="afterWrap">
+        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80" alt="بعد الإجراء">
+        <div class="ba-badge after">النتيجة بعد 30 يوم</div>
+      </div>
+
+      <!-- سلايدر التمرير الشفاف -->
+      <input type="range" min="0" max="100" value="50" class="ba-slider" id="baRange" oninput="updateSlider(this.value)">
+    </div>
+
+  </div>
+
+  <!-- Bottom Navigation Dock -->
+  <div class="bottom-nav">
+    <div class="dock">
+      <button class="dock-btn active" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+        <i class="fas fa-hospital-user"></i>
+        <span>الرئيسية</span>
+      </button>
+
+      <button class="dock-btn" onclick="openChatModal()">
+        <i class="fas fa-comment-medical"></i>
+        <span>المساعد</span>
+      </button>
+
+      <button class="dock-btn" onclick="openBookingModal()">
+        <i class="fas fa-calendar-alt"></i>
+        <span>الحجز</span>
+      </button>
+
+      <button class="dock-btn" onclick="openSymmetryModal()">
+        <i class="fas fa-eye"></i>
+        <span>التحليل</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 1. AI Concierge Modal -->
+  <div class="modal-overlay" id="chatModal">
+    <div class="modal-sheet">
+      <div class="sheet-header">
+        <h3 style="font-size:1.05rem; color:var(--gold-light);"><i class="fas fa-robot" style="color:var(--gold);"></i> المساعد الطبي الاستشاري</h3>
+        <button class="close-btn" onclick="closeModal('chatModal')">&times;</button>
+      </div>
+
+      <div class="chat-box" id="chatMessages">
+        <div class="chat-msg bot">
+          أهلاً بحضرتك في عيادتنا. أنا المساعد الرقمي للعيادة، جاهز للإجابة على استفسارات الإجراءات التجميلية والجراحية ومساعدتك في تثبيت موعد كشف مناسب. كيف يمكنني خدمتك؟
+        </div>
+      </div>
+
+      <div class="chat-input-row">
+        <input type="text" id="chatInput" class="chat-input" placeholder="اكتب سؤالك (مثلاً: أوقات الدوام، مدة التعافي)..." onkeypress="if(event.key==='Enter') sendChat()">
+        <button class="primary-btn" style="width: auto; padding: 10px 18px;" onclick="sendChat()">
+          <i class="fas fa-paper-plane"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Booking Modal (WhatsApp Integrated) -->
+  <div class="modal-overlay" id="bookingModal">
+    <div class="modal-sheet">
+      <div class="sheet-header">
+        <h3 style="font-size:1.05rem; color:var(--gold-light);"><i class="fas fa-calendar-check" style="color:var(--gold);"></i> حجز استشارة سريرية</h3>
+        <button class="close-btn" onclick="closeModal('bookingModal')">&times;</button>
+      </div>
+
+      <label class="form-label">الاسم الكامل للمراجع</label>
+      <input type="text" id="patientName" class="form-input" placeholder="مثال: ريم العلي">
+
+      <label class="form-label">رقم الهاتف / الموبايل</label>
+      <input type="tel" id="patientPhone" class="form-input" placeholder="09xxxxxxxx">
+
+      <label class="form-label">نوع الإجراء أو الاستشارة المطلوبة</label>
+      <select id="procedureType" class="form-select">
+        <option value="استشارة تجميلية عامة">استشارة تجميلية وتنسيق ملامح</option>
+        <option value="تجميل أنف جراحي">تجميل أنف جراحي (Rhinoplasty)</option>
+        <option value="حقن فيلر وبوتوكس">جلسة حقن فيلر / بوتوكس ملكي</option>
+        <option value="شد ونضارة البشرة">جلسات نضارة وشد خيوط ألمانية</option>
+        <option value="مراجعة دورية لعملية سابقة">مراجعة وفك قطب لعملية سابقة</option>
+      </select>
+
+      <label class="form-label">اليوم المفضل للكشف</label>
+      <select id="preferredDay" class="form-select">
+        <option value="السبت (4:00 - 8:00 مساءً)">السبت (4:00 - 8:00 مساءً)</option>
+        <option value="الاثنين (4:00 - 8:00 مساءً)">الاثنين (4:00 - 8:00 مساءً)</option>
+        <option value="الأربعاء (4:00 - 8:00 مساءً)">الأربعاء (4:00 - 8:00 مساءً)</option>
+      </select>
+
+      <button class="primary-btn whatsapp-btn" onclick="confirmBooking()">
+        <i class="fab fa-whatsapp" style="font-size:1.2rem;"></i> إرسال وتثبيت الحجز لـ WhatsApp العيادة
+      </button>
+    </div>
+  </div>
+
+  <!-- 3. Facial Symmetry Analyzer Modal -->
+  <div class="modal-overlay" id="symmetryModal">
+    <div class="modal-sheet">
+      <div class="sheet-header">
+        <h3 style="font-size:1.05rem; color:var(--gold-light);"><i class="fas fa-draw-polygon" style="color:var(--cyan);"></i> محلل النسب والزوايا الجمالية</h3>
+        <button class="close-btn" onclick="closeModal('symmetryModal')">&times;</button>
+      </div>
+
+      <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:14px; padding:14px; margin-bottom:12px;">
+        <p style="font-size:0.75rem; color:var(--muted); margin-bottom:10px;">تقنية محاكاة تبرز للمراجع معايير التناسق الجراحي قبل بدء الإجراء:</p>
+        
+        <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:0.78rem;">
+          <span>تناسق الثلث العلوي والسفلي (Golden Ratio):</span>
+          <strong style="color:var(--gold);">1:1.618 (مثالي)</strong>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:0.78rem;">
+          <span>الزاوية الأنفية الشفوية (Nasofrontal Angle):</span>
+          <strong style="color:var(--cyan);">104° (ضمن المعايير)</strong>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; font-size:0.78rem;">
+          <span>التناظر النصفي للفك والوجنتين:</span>
+          <strong style="color:#10b981;">98.4% دقة</strong>
+        </div>
+      </div>
+
+      <button class="primary-btn" onclick="closeModal('symmetryModal'); openBookingModal();">
+        حجز استشارة مخصصة لقياس ملامحك بالعيادة
+      </button>
+    </div>
+  </div>
+
+  <!-- 4. FAQ / Clinical Instructions Modal -->
+  <div class="modal-overlay" id="faqModal">
+    <div class="modal-sheet">
+      <div class="sheet-header">
+        <h3 style="font-size:1.05rem; color:var(--gold-light);"><i class="fas fa-file-medical" style="color:var(--gold);"></i> الإرشادات والتعليمات السريرية</h3>
+        <button class="close-btn" onclick="closeModal('faqModal')">&times;</button>
+      </div>
+
+      <div style="font-size:0.8rem; line-height:1.6; color:#cbd5e1;">
+        <strong style="color:var(--gold); display:block; margin-bottom:4px;">• تعليمات ما قبل الإجراء الجراحي:</strong>
+        <p style="margin-bottom:10px; color:var(--muted);">الصيام الكامل 8 ساعات قبل الموعد، والتوقف التام عن مميعات الدم ومضادات الالتهاب بعد استشارة طبيبك.</p>
+
+        <strong style="color:var(--gold); display:block; margin-bottom:4px;">• تعليمات ما بعد حقن الفيلر والبوتوكس:</strong>
+        <p style="margin-bottom:10px; color:var(--muted);">تجنب الانحناء أو النوم على الوجه لمدة 4 ساعات، والابتعاد عن درجات الحرارة العالية (الساونا، الشمس المباشرة) لأول 48 ساعة.</p>
+
+        <strong style="color:var(--gold); display:block; margin-bottom:4px;">• بروتوكول صرف الأدوية:</strong>
+        <p style="color:var(--muted);">تلتزم العيادة بالقوانين الطبية الصارمة؛ لا يتم وصف أي أدوية إلا بعد الفحص السريري المباشر داخل غرفة الكشف.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Before & After Interactive Slider
+    function updateSlider(val) {
+      document.getElementById('afterWrap').style.width = val + '%';
+    }
+
+    // Modal Handlers
+    function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+    function openChatModal() { openModal('chatModal'); }
+    function openBookingModal() { openModal('bookingModal'); }
+    function openSymmetryModal() { openModal('symmetryModal'); }
+    function openFaqModal() { openModal('faqModal'); }
+
+    // Close on outside click
+    window.onclick = function(e) {
+      if (e.target.classList.contains('modal-overlay')) {
+        e.target.style.display = 'none';
+      }
+    };
+
+    // AI Concierge Chat Logic
+    function sendChat() {
+      const input = document.getElementById('chatInput');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const container = document.getElementById('chatMessages');
+      
+      container.innerHTML += `<div class="chat-msg user">${text}</div>`;
+      input.value = '';
+
+      setTimeout(() => {
+        let reply = "أهلاً بك. للاطمئنان الكامل على حالتك وتحديد الأنسب بدقة، ننصحك بحجز موعد استشارة سريرية داخل العيادة.";
+        const q = text.toLowerCase();
+
+        if (q.includes("دوام") || q.includes("ساعات") || q.includes("وقت") || q.includes("عنوان")) {
+          reply = "تستقبلكم العيادة أيام (السبت، الاثنين، الأربعاء) من الساعة 4:00 عصراً حتى 8:30 مساءً. نرجو تثبيت موعد مسبق لتجنب الانتظار.";
+        } else if (q.includes("دواء") || q.includes("مرهم") || q.includes("وجع") || q.includes("علاج")) {
+          reply = "حفاظاً على سلامتك الطبية، تمنع معايير العيادة صرف أو وصف أي علاج دوائي عبر المراسلة. يشرفنا فحصك سريرياً لتشخيص الحالة بدقة.";
+        } else if (q.includes("تكلفة") || q.includes("سعر") || q.includes("بكام") || q.includes("كم")) {
+          reply = "تختلف الخطة العلاجية والتكلفة بحسب الحالة والتقنية الأنسب لك بعد المعاينة المباشرة. يمكنك تثبيت استشارة أولية لبحث كافة التفاصيل.";
+        } else if (q.includes("تعافي") || q.includes("عملية") || q.includes("أنف") || q.includes("فيلر")) {
+          reply = "تتراوح مدة التعافي لمعظم الإجراءات التجميلية الخفيفة بين 24 إلى 48 ساعة، بينما تتطلب الجراحات راحة أسبوعية. الطبيب يشرح لك البروتوكول بدقة أثناء الكشف.";
+        }
+
+        container.innerHTML += `<div class="chat-msg bot">${reply}</div>`;
+        container.scrollTop = container.scrollHeight;
+      }, 400);
+    }
+
+    // WhatsApp Appointment Booking Logic
+    function confirmBooking() {
+      const name = document.getElementById('patientName').value.trim();
+      const phone = document.getElementById('patientPhone').value.trim();
+      const procedure = document.getElementById('procedureType').value;
+      const day = document.getElementById('preferredDay').value;
+
+      if (!name || !phone) {
+        alert("يرجى تدوين الاسم ورقم الهاتف لتثبيت الكود الطبي المخصص لك");
+        return;
+      }
+
+      const bookingCode = "RC-" + Math.floor(1000 + Math.random() * 9000);
+
+      const msg = `ROYAL CLINIC | طلب حجز موعد سريري جديد 🩺
+كود الاستشارة: ${bookingCode}
+---------------------------------
+👤 اسم المراجع: ${name}
+📱 رقم التواصل: ${phone}
+📋 الإجراء المطلوب: ${procedure}
+🗓️ الموعد المفضل: ${day}
+---------------------------------
+تم إنشاء الحجز عبر المنظومة الرقمية للعيادة، يرجى تأكيد إدراج الاسم في جدول المواعيد.`;
+
+      const clinicWhatsApp = "963995382496";
+      const url = `https://wa.me/${clinicWhatsApp}?text=${encodeURIComponent(msg)}`;
+      window.open(url, '_blank');
+    }
+  </script>
+</body>
+</html>
